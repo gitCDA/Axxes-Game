@@ -149,7 +149,8 @@ async function finishedGames() {
     <div class="popup-content">
       <h2>${hasWon ? '🎉 Félicitations, ' + username + ' !' : '😢 Dommage, ' + username + '...'}</h2>
       <p>${hasWon ? 'Tu as empoché le gros lot !' : 'C\'est perdu.'}</p>
-      <button onclick="this.parentElement.parentElement.remove(); generateCards();">Réessayer</button>
+      <button onclick="this.parentElement.parentElement.remove(); generateCards();">
+      Réessayer</button>
     </div>
   `;
 
