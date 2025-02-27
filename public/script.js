@@ -4,6 +4,12 @@ const maxScratches = 3;
 let gameActive = false;
 let hasWon = false;
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+}
+
 function login() {
   const input = document.getElementById('username');
   const gameContainer = document.querySelector('.game-container');
@@ -16,12 +22,11 @@ function login() {
   input.disabled = true;
   document.querySelector('.user-form').style.display = 'none';
   gameContainer.style.display = 'block';
-}
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  userForm = document.querySelector('.user-form').style.display
+  animatedImage = document.querySelector('.animated-image')
+  if (userForm === 'none' && animatedImage) {
+    animatedImage.remove();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,6 +43,11 @@ function generateCards() {
   gameActive = true;
   const game = document.querySelector('.scratch-game');
   game.innerHTML = '';
+  userForm = document.querySelector('.user-form').style.display
+  animatedImage = document.querySelector('.animated-image')
+  if (userForm === 'none' && animatedImage) {
+    animatedImage.remove();
+  }
 
   for (let i = 0; i < 9; i++) {
     const card = document.createElement('div');
@@ -48,7 +58,7 @@ function generateCards() {
       <div class="front">
       </div>
       <div class="back">
-      <img class="card-image" src="./carte martinique.png">
+      <img class="card-image" src="./images/carte martinique.png">
       </div>
     </div>
     `;
@@ -68,8 +78,8 @@ function flipCard() {
   const frontImg = document.createElement('img');
   frontImg.className = 'card-image';
 
-  const randomNumber = Math.floor(Math.random() * 3) + 1;
-  frontImg.src = `./${randomNumber}.jpg`;
+  const randomNumber = Math.floor(Math.random() * 2) + 1;
+  frontImg.src = `./images/${randomNumber}.jpg`;
 
   frontDiv.appendChild(frontImg);
   backDiv.innerHTML = '';
@@ -79,8 +89,9 @@ function flipCard() {
 
   if (scratchedCount === maxScratches) {
     gameActive = false;
-    finishedGames();
-    displayHistory();
+    setTimeout(() => {
+      finishedGames();
+    }, 1500);
   }
 }
 
@@ -94,11 +105,12 @@ async function displayHistory() {
 
     if (result.success) {
       result.lastGames.forEach(game => {
+
         historyDiv.innerHTML += `
           <div class="participation">
             <span>${game.pseudo}</span>
             <span>${game.result}</span>
-            <span>${game.date}</span>
+            <span class="game-date">${game.date}</span>
           </div>
         `;
       });
@@ -108,6 +120,13 @@ async function displayHistory() {
   } catch (error) {
     console.error('Erreur :', error);
   }
+
+  const dateSpans = document.querySelectorAll('.game-date');
+  dateSpans.forEach(span => {
+    const dateText = span.textContent;
+    const formattedDate = dateText.slice(0, -3);
+    span.textContent = formattedDate;
+  });
 }
 
 async function finishedGames() {
@@ -128,8 +147,8 @@ async function finishedGames() {
   popup.className = 'result-popup';
   popup.innerHTML = `
     <div class="popup-content">
-      <h2>${hasWon ? '🎉 Félicitations !' : '😢 Dommage...'}</h2>
-      <p>${hasWon ? 'Vous avez gagné !' : 'C\'est perdu.'}</p>
+      <h2>${hasWon ? '🎉 Félicitations, ' + username + ' !' : '😢 Dommage, ' + username + '...'}</h2>
+      <p>${hasWon ? 'Tu as empoché le gros lot !' : 'C\'est perdu.'}</p>
       <button onclick="this.parentElement.parentElement.remove(); generateCards();">Réessayer</button>
     </div>
   `;

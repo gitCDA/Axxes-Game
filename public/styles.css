@@ -8,26 +8,36 @@
 body {
   background: linear-gradient(135deg, #2cdb43d3, #2575fc); /* Dégradé de fond */
   color: white; /* Texte en blanc */
+  overflow: hidden;
 }
 
 .container {
   padding: 20px;
   max-width: 700px;
+  max-height: 1000px;
   margin: 0 auto;
 }
 
 .game-container {
   display: none;
   min-height: 100vh;
-  padding-top: 2%;
+}
+
+.div-logo {
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
 }
 
 #logo {
-  width: 15%;
+  width: 20%;
+  height: 70%;
+  object-fit: cover;
+  object-position:center;
 }
 
 #regle-du-jeu{
-  margin: 2%;
+  margin-bottom: 2%;
   text-align: center;
 }
   
@@ -41,29 +51,35 @@ body {
 .user-form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   min-height: 100vh;
   gap: 20px;
   text-align: center;
+  padding-top: 10%;
+}
+
+.image-start {
+  width: 35%;
 }
 
 .animated-image {
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 100px;
-  background-image: url('votre-image.png');
-  background-size: cover;
+  display: flex;
+  justify-content: center;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+  transform: translateZ(-100%);
+  padding-top: 30%;
+  animation: zoom 3s ease-out forwards;
 }
 
-.user-form.visible .animated-image {
-  top: 20px;
-  opacity: 1;
+@keyframes zoom {
+  from {
+    opacity: 0;
+    transform: translateZ(-100%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+    }
 }
 
 .text-form {
@@ -71,6 +87,20 @@ body {
   font-weight: bold;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Ombre du texte */
+  opacity: 0;
+  transform: translateX(-100%);
+  animation: slideIn 1s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .formulaire {
@@ -124,7 +154,7 @@ button:active {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
   
   .scratch-card {
@@ -200,6 +230,7 @@ button:active {
     padding: 2rem;
     border-radius: 10px;
     width: 75%;
+    max-width: 450px;
     color: black;
     text-align: center;
     box-shadow: 0 0 20px rgba(0,0,0,0.2);

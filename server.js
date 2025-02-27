@@ -26,7 +26,6 @@ app.get('/', (req, res) => {
 // Route GET pour récupérer l'historique des parties
 app.get('/get-history', async (req, res) => {
     try {
-      console.log('first')
       // Récupère les 3 dernières parties
       const snapshot = await db.collection('games')
         .orderBy('date', 'desc')

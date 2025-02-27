@@ -9,8 +9,10 @@
 </head>
 <body>
   <div class="container">
+    <div class="animated-image">
+      <img class="image-start" src="./images/start-button.png"></img>
+    </div>
     <div class="user-form">
-      <div class="animated-image"></div>
       <div class="text-form">Inscris ton pseudo pour commencer la partie</div>
       <div class="formulaire">
         <input type="text" id="username" placeholder="Pseudo" required>
@@ -19,13 +21,13 @@
     </div>
 
     <div class="game-container">
-      <div>
-        <img id="logo" src="./logo.jpg"></img>
+      <div class="div-logo">
+        <img id="logo" src="./images/logo.jpg"></img>
       </div>
       <div id="regle-du-jeu">
-        Grattez 3 cases
+        Gratte 3 cases
         <br>
-        Si vous découvrez 3 fleurs identiques, c'est gagné
+        Si tu découvres 3 fleurs identiques, c'est gagné
       </div>
       <section class="scratch-game"></section>
         <div id="history"></div>
