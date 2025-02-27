@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "firebase-admin": "^13.1.0",
     "mongodb": "^6.13.1",
     "mongoose": "^8.10.2",
+    "vite": "^6.2.0",
     "vite-plugin-environment": "^1.1.3"
   }
 }
