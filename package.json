@@ -1,0 +1,19 @@
+{
+  "name": "axxes-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "firebase": "^11.3.1",
+    "firebase-admin": "^13.1.0",
+    "mongodb": "^6.13.1",
+    "mongoose": "^8.10.2",
+    "vite-plugin-environment": "^1.1.3"
+  }
+}
