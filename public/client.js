@@ -14,23 +14,3 @@ const firebaseConfig = {
 // Initialisation Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-
-const myCollectionRef = collection(db, "<your-collection>");
-
-    // Récupère les 3 dernières participations
-    const snapshot = await db.collection('games')
-      .orderBy('date', 'desc')
-      .limit(3)
-      .get();
-
-const newElement = {
-  
-};
-
-addDoc(myCollectionRef, newElement)
-  .then((docRef) => {
-    console.log("Document written with ID: ", docRef.id);
-  })
-  .catch((error) => {
-    console.error("Error adding document: ", error);
-  });

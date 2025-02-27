@@ -48,7 +48,7 @@ function generateCards() {
       <div class="front">
       </div>
       <div class="back">
-      <img class="card-image" src="/public/carte martinique.png">
+      <img class="card-image" src="./carte martinique.png">
       </div>
     </div>
     `;
@@ -69,7 +69,7 @@ function flipCard() {
   frontImg.className = 'card-image';
 
   const randomNumber = Math.floor(Math.random() * 3) + 1;
-  frontImg.src = `/public/${randomNumber}.jpg`;
+  frontImg.src = `./${randomNumber}.jpg`;
 
   frontDiv.appendChild(frontImg);
   backDiv.innerHTML = '';
@@ -84,27 +84,33 @@ function flipCard() {
   }
 }
 
-function displayHistory() {
+async function displayHistory() {
   const historyDiv = document.getElementById('history');
   historyDiv.innerHTML = '<h3>Dernières participations :</h3>';
-  
-  const participations = JSON.parse(localStorage.getItem('participations') || '[]')
-  .slice(-3)
-  .reverse();
-  
-  participations.forEach(p => {
-    historyDiv.innerHTML += `
-    <div class="participation">
-    <span>${p.pseudo}</span>
-    <span>${p.result}</span>
-    <span>${p.date}</span>
-    </div>
-    `;
-  });
+
+  try {
+    const response = await fetch('/get-history');
+    const result = await response.json();
+
+    if (result.success) {
+      result.lastGames.forEach(game => {
+        historyDiv.innerHTML += `
+          <div class="participation">
+            <span>${game.pseudo}</span>
+            <span>${game.result}</span>
+            <span>${game.date}</span>
+          </div>
+        `;
+      });
+    } else {
+      console.error('Erreur :', result.error);
+    }
+  } catch (error) {
+    console.error('Erreur :', error);
+  }
 }
 
 async function finishedGames() {
-  // Récupérer les cartes grattées
   const flippedCards = document.querySelectorAll('.flipped');
 
   // Vérifier si les 3 images sont identiques
@@ -114,7 +120,6 @@ async function finishedGames() {
     if (img) images.push(img.src.split('/').pop()); // Récupère le nom du fichier image
   });
 
-  // Vérification de la victoire
   const uniqueImages = [...new Set(images)];
   hasWon = uniqueImages.length === 1 && images.length === 3;
 
@@ -125,30 +130,33 @@ async function finishedGames() {
     <div class="popup-content">
       <h2>${hasWon ? '🎉 Félicitations !' : '😢 Dommage...'}</h2>
       <p>${hasWon ? 'Vous avez gagné !' : 'C\'est perdu.'}</p>
-      <button onclick="this.parentElement.parentElement.remove(); generateCards(); displayHistory()">Réessayer</button>
+      <button onclick="this.parentElement.parentElement.remove(); generateCards();">Réessayer</button>
     </div>
   `;
 
   document.body.appendChild(popup);
 
-  // Enregistrement dans Firebase
+  // Enregistrement dans Firebase via l'API backend
   try {
-    const response = await fetch('/scratch', {
+    const response = await fetch('/add-game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         pseudo: username,
-        index: scratchedCount,
         result: hasWon,
-        images: images
       })
     });
-
+    
     const result = await response.json();
-    console.log('Réponse Firebase:', result);
+
+    if (result.success) {
+      console.log('Partie enregistrée avec succès !', result);
+    } else {
+      console.error('Erreur lors de l\'enregistrement :', result.error);
+    }
 
   } catch (error) {
-    console.error('Erreur Firebase:', error);
+    console.error('Erreur :', error);
   }
 
 }
