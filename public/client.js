@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-
+console.log('first')
 // Chargement de la configuration depuis .env
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
