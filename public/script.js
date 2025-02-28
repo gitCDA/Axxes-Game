@@ -123,24 +123,34 @@ async function displayHistory() {
     games.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     games.slice(0, 3).forEach(game => {
-      const date = new Date(game.date); // Convertit en objet Date
-      const formattedDate = date.toLocaleString('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      if (game.date && typeof game.date === 'string') {
+        const date = new Date(game.date); // Convertit en objet Date
+        
+        // Vérifie si la date est valide
+        if (!isNaN(date.getTime())) {
+          const formattedDate = date.toLocaleString('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
       
-      historyDiv.innerHTML += `
-        <div class="participation">
-          <span>${game.pseudo}</span>
-          <span>${game.result ? 'Gagné' : 'Perdu'}</span>
-          <span class="game-date">${formattedDate}</span>
-        </div>
-      `;
-    });
-  }
+          historyDiv.innerHTML += `
+          <div class="participation">
+            <span>${game.pseudo}</span>
+            <span>${game.result ? 'Gagné' : 'Perdu'}</span>
+            <span class="game-date">${formattedDate}</span>
+          </div>
+        `;
+      } else {
+        console.error('Date invalide');
+      }
+    } else {
+      console.error('Date manquante ou non valide');
+    }
+  });
+}
 }
 
 async function finishedGames() {
