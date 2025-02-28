@@ -77,8 +77,5 @@ app.post('/add-game', async (req, res) => {
   }
 });
 
-// Utilisez le routeur avec un préfixe
-app.use('/.netlify/functions/server', router);
-
 // Exportez pour Netlify Functions
 module.exports.handler = serverless(app);
