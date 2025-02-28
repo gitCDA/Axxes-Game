@@ -3,7 +3,7 @@ import serverless from 'serverless-http'; // Importez serverless-http
 import path from 'path';
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
-require('dotenv').config();
+import 'dotenv/config';
 // Configuration Firebase Admin SDK
 const serviceAccount = {
   type: process.env.FIREBASE_TYPE,
