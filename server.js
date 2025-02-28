@@ -3,13 +3,26 @@ const path = require('path');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 require('dotenv').config();
+const serviceAccount = {
+  type: import.meta.env.FIREBASE_TYPE,
+  project_id: import.meta.env.FIREBASE_PROJECT_ID,
+  private_key_id: import.meta.env.FIREBASE_PRIVATE_KEY_ID,
+  private_key: import.meta.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  client_email: import.meta.env.FIREBASE_CLIENT_EMAIL,
+  client_id: import.meta.env.FIREBASE_CLIENT_ID,
+  auth_uri: import.meta.env.FIREBASE_AUTH_URI,
+  token_uri: import.meta.env.FIREBASE_TOKEN_URI,
+  auth_provider_x509_cert_url: import.meta.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: import.meta.env.FIREBASE_CLIENT_CERT_URL,
+  universe_domain: import.meta.env.UNIVERSE_DOMAIN
+};
 
 // Initialisation de Firebase
 initializeApp({
   credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+    projectId: import.meta.env.FIREBASE_PROJECT_ID,
+    clientEmail: import.meta.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: import.meta.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
   }),
 });
 
