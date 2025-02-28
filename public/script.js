@@ -169,7 +169,7 @@ async function finishedGames() {
   const gameData = {
     pseudo: username,
   result: hasWon,
-  date: Date.now() - (4 * 60 * 60 * 1000)
+  date: Date.now()
 };
 
 const storedGames = localStorage.getItem('games');
