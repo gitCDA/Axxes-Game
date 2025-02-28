@@ -84,11 +84,5 @@ app.post('/add-game', async (req, res) => {
   }
 });
 
-// Démarrer le serveur
-app.listen(port, () => {
-  console.log(`Serveur en écoute sur le port ${port}`);
-});
-
-
 // Exportez pour Netlify Functions
 module.exports.handler = serverless(app);
