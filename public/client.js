@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-console.log('first')
+
 // Chargement de la configuration depuis .env
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -10,9 +10,7 @@ const firebaseConfig = {
   messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.VITE_FIREBASE_APP_ID
 };
-console.log(firebaseConfig)
-console.log(firebaseApp)
-console.log(db)
+
 // import.meta
 // Initialisation Firebase
 const firebaseApp = initializeApp(firebaseConfig);

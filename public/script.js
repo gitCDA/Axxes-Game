@@ -1,4 +1,4 @@
-let username = null;
+let username = localStorage.getItem('username') || null;
 let scratchedCount = 0;
 const maxScratches = 3;
 let gameActive = false;
@@ -10,24 +10,34 @@ function getCookie(name) {
   if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
 }
 
+// Stockage du pseudo dans localStorage
 function login() {
   const input = document.getElementById('username');
-  const gameContainer = document.querySelector('.game-container');
-  
   if (!input.value.trim()) return;
   
   username = input.value.trim();
-  document.cookie = `username=${encodeURIComponent(username)}; expires=${new Date(Date.now() + 7 * 86400e3).toUTCString()}; path=/`;
+  localStorage.setItem('username', username); // Stockage dans localStorage
   
   input.disabled = true;
   document.querySelector('.user-form').style.display = 'none';
-  gameContainer.style.display = 'block';
-  userForm = document.querySelector('.user-form').style.display
-  animatedImage = document.querySelector('.animated-image')
-  if (userForm === 'none' && animatedImage) {
-    animatedImage.remove();
-  }
+  document.querySelector('.game-container').style.display = 'block';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedUsername = localStorage.getItem('username');
+  if (savedUsername) {
+    username = savedUsername;
+    document.querySelector('.user-form').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (username) {
+    document.querySelector('.user-form').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const savedUsername = getCookie('username');
@@ -99,35 +109,32 @@ async function displayHistory() {
   const historyDiv = document.getElementById('history');
   historyDiv.innerHTML = '<h3>Dernières participations :</h3>';
 
-  try {
-    const response = await fetch('/api/get-history');
-    console.log(response)
-    const result = await response.json();
-    console.log(result)
-    if (result.success) {
-      result.lastGames.forEach(game => {
-
-        historyDiv.innerHTML += `
-          <div class="participation">
-            <span>${game.pseudo}</span>
-            <span>${game.result}</span>
-            <span class="game-date">${game.date}</span>
-          </div>
-        `;
+  const storedGames = localStorage.getItem('games');
+  if (storedGames) {
+    const games = JSON.parse(storedGames);
+    
+    // Trie les jeux par date décroissante
+    games.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    games.slice(0, 3).forEach(game => {
+      const date = new Date(game.date); // Convertit en objet Date
+      const formattedDate = date.toLocaleString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       });
-    } else {
-      console.error('Erreur :', result.error);
-    }
-  } catch (error) {
-    console.error('Erreur :', error);
+      
+      historyDiv.innerHTML += `
+        <div class="participation">
+          <span>${game.pseudo}</span>
+          <span>${game.result ? 'Gagné' : 'Perdu'}</span>
+          <span class="game-date">${formattedDate}</span>
+        </div>
+      `;
+    });
   }
-
-  const dateSpans = document.querySelectorAll('.game-date');
-  dateSpans.forEach(span => {
-    const dateText = span.textContent;
-    const formattedDate = dateText.slice(0, -3);
-    span.textContent = formattedDate;
-  });
 }
 
 async function finishedGames() {
@@ -158,29 +165,21 @@ async function finishedGames() {
 
   document.body.appendChild(popup);
 
-  // Enregistrement dans Firebase via l'API backend
-  try {
-    const response = await fetch('/api/add-game', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        pseudo: username,
-        result: hasWon,
-      })
-    });
-    
-    const result = await response.json();
+// Stockage dans localStorage
+const gameData = {
+  pseudo: username,
+  result: hasWon,
+  date: new Date().toLocaleString()
+};
 
-    if (result.success) {
-      console.log('Partie enregistrée avec succès !', result);
-    } else {
-      console.error('Erreur lors de l\'enregistrement :', result.error);
-    }
-
-  } catch (error) {
-    console.error('Erreur :', error);
-  }
-
+const storedGames = localStorage.getItem('games');
+if (storedGames) {
+  const games = JSON.parse(storedGames);
+  games.push(gameData);
+  localStorage.setItem('games', JSON.stringify(games));
+} else {
+  localStorage.setItem('games', JSON.stringify([gameData]));
+}
 }
 
 // Initialisation
