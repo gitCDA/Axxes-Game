@@ -16,11 +16,17 @@ function login() {
   if (!input.value.trim()) return;
   
   username = input.value.trim();
-  localStorage.setItem('username', username); // Stockage dans localStorage
+  document.cookie = `username=${encodeURIComponent(username)}; expires=${new Date(Date.now() + 7 * 86400e3).toUTCString()}; path=/`;
+  localStorage.setItem('username', username);
   
   input.disabled = true;
   document.querySelector('.user-form').style.display = 'none';
   document.querySelector('.game-container').style.display = 'block';
+  userForm = document.querySelector('.user-form').style.display
+  animatedImage = document.querySelector('.animated-image')
+  if (userForm === 'none' && animatedImage) {
+    animatedImage.remove();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
