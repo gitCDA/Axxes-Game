@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axxes Game</title>
+  <script src="./client.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-PUzR61PT.css">
+</head>
+<body>
+  <div class="container">
+    <div class="animated-image">
+      <img class="image-start" src="/assets/planet-earth-CRf8jS3b.png"></img>
+    </div>
+    <div class="user-form">
+      <div class="text-form">Inscris ton pseudo pour commencer la partie</div>
+      <div class="formulaire">
+        <input type="text" id="username" placeholder="Pseudo" required>
+        <button onclick="login()">Jouer</button>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <div class="div-logo">
+        <img id="logo" src="/assets/logo-DBjTU5T1.jpg"></img>
+      </div>
+      <div id="regle-du-jeu">
+        Gratte 3 cases
+        <br>
+        Si tu découvres 3 fleurs identiques, c'est gagné
+      </div>
+      <section class="scratch-game"></section>
+        <div id="history"></div>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
