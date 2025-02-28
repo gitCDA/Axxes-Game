@@ -1,8 +1,8 @@
-const express = require('express');
-const serverless = require('serverless-http'); // Importez serverless-http
-const path = require('path');
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore, Timestamp } = require('firebase-admin/firestore');
+import express, { json } from 'express';
+import serverless from 'serverless-http'; // Importez serverless-http
+import path from 'path';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 require('dotenv').config();
 // Configuration Firebase Admin SDK
 const serviceAccount = {
@@ -17,7 +17,7 @@ initializeApp({ credential: cert(serviceAccount) });
 const db = getFirestore(); // Initialisation de Firestore
 
 const app = express();
-app.use(express.json());
+app.use(json());
 
 // Route GET pour récupérer l'historique des parties
 app.get('/get-history', async (req, res) => {
@@ -77,5 +77,4 @@ app.post('/add-game', async (req, res) => {
   }
 });
 
-// Exportez pour Netlify Functions
-module.exports.handler = serverless(app);
+export const handler = serverless(app);
