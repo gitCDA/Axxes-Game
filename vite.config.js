@@ -2,6 +2,12 @@ import { defineConfig } from 'vite';
 import EnvironmentPlugin from 'vite-plugin-environment';
 
 export default defineConfig({
+  publicDir: '/public',
+  build: {
+    rollupOptions: {
+      input: 'public/index.html', // Point d'entrée pour le build
+    },
+  },
   plugins: [
     EnvironmentPlugin([
         'VITE_FIREBASE_API_KEY',
