@@ -123,26 +123,30 @@ async function displayHistory() {
     games.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     games.slice(0, 3).forEach(game => {
-      const date = new Date(game.date); // Convertit en objet Date
-      const formattedDate = date.toLocaleString('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      const date = new Date(game.date); // Convertit le timestamp en objet Date
       
-      historyDiv.innerHTML += `
-        <div class="participation">
-          <span>${game.pseudo}</span>
-          <span>${game.result ? 'Gagné' : 'Perdu'}</span>
-          <span class="game-date">${formattedDate}</span>
-        </div>
-      `;
+      if (!isNaN(date.getTime())) { // Vérifie si la date est valide
+        const formattedDate = date.toLocaleString('fr-FR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).slice(0, -3); // Formate en français et supprime les secondes
+        
+        historyDiv.innerHTML += `
+          <div class="participation">
+            <span>${game.pseudo}</span>
+            <span>${game.result ? 'Gagné' : 'Perdu'}</span>
+            <span class="game-date">${formattedDate}</span>
+          </div>
+        `;
+      } else {
+        console.error('Date invalide');
+      }
     });
   }
 }
-
 async function finishedGames() {
   const flippedCards = document.querySelectorAll('.flipped');
 
@@ -175,13 +179,7 @@ async function finishedGames() {
 const gameData = {
   pseudo: username,
   result: hasWon,
-  date: new Date().toLocaleString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  date: Date.now()
 };
 
 const storedGames = localStorage.getItem('games');
