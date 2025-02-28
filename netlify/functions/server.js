@@ -17,14 +17,7 @@ initializeApp({ credential: cert(serviceAccount) });
 const db = getFirestore(); // Initialisation de Firestore
 
 const app = express();
-// Servir les fichiers statiques
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-
-// Route pour la page d'accueil
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // Route GET pour récupérer l'historique des parties
 app.get('/get-history', async (req, res) => {
@@ -83,6 +76,9 @@ app.post('/add-game', async (req, res) => {
     res.status(500).json({ success: false, error: 'Erreur interne du serveur' });
   }
 });
+
+// Utilisez le routeur avec un préfixe
+app.use('/.netlify/functions/server', router);
 
 // Exportez pour Netlify Functions
 module.exports.handler = serverless(app);
