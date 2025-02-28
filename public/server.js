@@ -16,6 +16,7 @@ const serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
   universe_domain: process.env.UNIVERSE_DOMAIN
 };
+console.log(serviceAccount)
 
 // Initialisation de Firebase
 initializeApp({

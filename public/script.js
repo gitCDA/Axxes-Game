@@ -103,7 +103,7 @@ async function displayHistory() {
     const response = await fetch('/get-history');
     console.log(response)
     const result = await response.json();
-
+    console.log(result)
     if (result.success) {
       result.lastGames.forEach(game => {
 
