@@ -101,6 +101,7 @@ async function displayHistory() {
 
   try {
     const response = await fetch('/get-history');
+    console.log(response)
     const result = await response.json();
 
     if (result.success) {
