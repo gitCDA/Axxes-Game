@@ -129,19 +129,18 @@ async function displayHistory() {
         date = new Date(game.date);
         
         if (isNaN(date.getTime())) { // Vérifie si la date est invalide
-          date = new Date(); // Remplace par la date actuelle
+          date = new Date();
         }
-      } else {
-        date = new Date(); // Si pas de date, utilise la date actuelle
-      }
+        } else {
+          date = new Date();
+        }
       
       const formattedDate = date.toLocaleString('fr-FR', {
         day: 'numeric',
         month: 'long',
-        year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-      }).slice(0, -3); // Formate en français et supprime les secondes
+      });
       
       historyDiv.innerHTML += `
         <div class="participation">
