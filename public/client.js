@@ -1,5 +1,5 @@
-import { initializeApp } from '../node_modules/firebase/app';
-import { getFirestore } from '../node_modules/firebase/firestore';
+const { initializeApp } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 console.log('first')
 // Chargement de la configuration depuis .env
 const firebaseConfig = {
