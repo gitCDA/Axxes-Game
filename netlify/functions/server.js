@@ -26,6 +26,7 @@ app.use(cors({
 
 // Route GET pour récupérer l'historique des parties
 app.get('/get-history', async (req, res) => {
+  console.log('first')
     try {
       // Récupère les 3 dernières parties
       const snapshot = await db.collection('games')
