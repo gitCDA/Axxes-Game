@@ -1,0 +1,3 @@
+[build]
+  functions = "netlify/functions" # Dossier des fonctions serverless
+  publish = "public"              # Dossier des fichiers statiques

@@ -100,7 +100,7 @@ async function displayHistory() {
   historyDiv.innerHTML = '<h3>Dernières participations :</h3>';
 
   try {
-    const response = await fetch('/get-history');
+    const response = await fetch('/.netlify/functions/server/get-history');
     console.log(response)
     const result = await response.json();
     console.log(result)
@@ -160,7 +160,7 @@ async function finishedGames() {
 
   // Enregistrement dans Firebase via l'API backend
   try {
-    const response = await fetch('/add-game', {
+    const response = await fetch('/.netlify/functions/server/add-game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
