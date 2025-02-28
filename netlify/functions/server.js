@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import serverless from 'serverless-http'; // Importez serverless-http
 import path from 'path';
+import cors from 'cors';
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import 'dotenv/config';
@@ -18,6 +19,10 @@ const db = getFirestore(); // Initialisation de Firestore
 
 const app = express();
 app.use(json());
+app.use(cors({
+  origin: 'https://axxesgame.netlify.app/',
+  methods: ['GET', 'POST']
+}));
 
 // Route GET pour récupérer l'historique des parties
 app.get('/get-history', async (req, res) => {
