@@ -123,27 +123,33 @@ async function displayHistory() {
     games.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     games.slice(0, 3).forEach(game => {
-      const date = new Date(game.date); // Convertit le timestamp en objet Date
+      let date;
       
-      if (!isNaN(date.getTime())) { // Vérifie si la date est valide
-        const formattedDate = date.toLocaleString('fr-FR', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }).slice(0, -3); // Formate en français et supprime les secondes
+      if (game.date && typeof game.date === 'string') {
+        date = new Date(game.date);
         
-        historyDiv.innerHTML += `
-          <div class="participation">
-            <span>${game.pseudo}</span>
-            <span>${game.result ? 'Gagné' : 'Perdu'}</span>
-            <span class="game-date">${formattedDate}</span>
-          </div>
-        `;
+        if (isNaN(date.getTime())) { // Vérifie si la date est invalide
+          date = new Date(); // Remplace par la date actuelle
+        }
       } else {
-        console.error('Date invalide');
+        date = new Date(); // Si pas de date, utilise la date actuelle
       }
+      
+      const formattedDate = date.toLocaleString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).slice(0, -3); // Formate en français et supprime les secondes
+      
+      historyDiv.innerHTML += `
+        <div class="participation">
+          <span>${game.pseudo}</span>
+          <span>${game.result ? 'Gagné' : 'Perdu'}</span>
+          <span class="game-date">${formattedDate}</span>
+        </div>
+      `;
     });
   }
 }
