@@ -29,31 +29,6 @@ function login() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedUsername = localStorage.getItem('username');
-  if (savedUsername) {
-    username = savedUsername;
-    document.querySelector('.user-form').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'block';
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (username) {
-    document.querySelector('.user-form').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'block';
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const savedUsername = getCookie('username');
-  if (savedUsername) {
-    username = savedUsername;
-    document.querySelector('.user-form').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'block';
-  }
-});
-
 function generateCards() {
   scratchedCount = 0;
   gameActive = true;
@@ -64,7 +39,7 @@ function generateCards() {
   if (userForm === 'none' && animatedImage) {
     animatedImage.remove();
   }
-
+  
   for (let i = 0; i < 9; i++) {
     const card = document.createElement('div');
     card.className = 'scratch-card';
@@ -76,35 +51,35 @@ function generateCards() {
       <div class="back">
       <img class="card-image" src="./images/carte martinique.png">
       </div>
-    </div>
-    `;
+      </div>
+      `;
+      
+      card.addEventListener('click', flipCard);
+      game.appendChild(card);
+    };
     
-    card.addEventListener('click', flipCard);
-    game.appendChild(card);
-  };
+    displayHistory();
+  }
   
-  displayHistory();
-}
-
-function flipCard() {
-  if (!gameActive || scratchedCount >= maxScratches || this.classList.contains('flipped')) return;
-
-  const frontDiv = this.querySelector('.front');
-  const backDiv = this.querySelector('.back');
-  const frontImg = document.createElement('img');
-  frontImg.className = 'card-image';
-
-  const randomNumber = Math.floor(Math.random() * 2) + 1;
-  frontImg.src = `./images/${randomNumber}.jpg`;
-
-  frontDiv.appendChild(frontImg);
-  backDiv.innerHTML = '';
-  this.classList.add('flipped');
-  
-  scratchedCount++;
-
-  if (scratchedCount === maxScratches) {
-    gameActive = false;
+  function flipCard() {
+    if (!gameActive || scratchedCount >= maxScratches || this.classList.contains('flipped')) return;
+    
+    const frontDiv = this.querySelector('.front');
+    const backDiv = this.querySelector('.back');
+    const frontImg = document.createElement('img');
+    frontImg.className = 'card-image';
+    
+    const randomNumber = Math.floor(Math.random() * 2) + 1;
+    frontImg.src = `./images/${randomNumber}.jpg`;
+    
+    frontDiv.appendChild(frontImg);
+    backDiv.innerHTML = '';
+    this.classList.add('flipped');
+    
+    scratchedCount++;
+    
+    if (scratchedCount === maxScratches) {
+      gameActive = false;
     setTimeout(() => {
       finishedGames();
     }, 1500);
@@ -117,41 +92,51 @@ async function displayHistory() {
 
   const storedGames = localStorage.getItem('games');
   if (storedGames) {
-    const games = JSON.parse(storedGames);
+    let games = JSON.parse(storedGames);
+    
+    // Corrige les dates invalides
+    games = games.map(game => {
+      if (game.date) {
+        const date = new Date(game.date);
+        
+        if (isNaN(date.getTime())) {
+          game.date = Date.now();
+        }
+      } else {
+        game.date = Date.now();
+      }
+      
+      return game;
+    });
     
     // Trie les jeux par date décroissante
-    games.sort((a, b) => new Date(b.date) - new Date(a.date));
+    games.sort((a, b) => b.date - a.date);
     
     games.slice(0, 3).forEach(game => {
-      let date;
-      
-      if (game.date && typeof game.date === 'string') {
-        date = new Date(game.date);
-        
-        if (isNaN(date.getTime())) { // Vérifie si la date est invalide
-          date = new Date();
-        }
-        } else {
-          date = new Date();
-        }
+      const date = new Date(game.date);
       
       const formattedDate = date.toLocaleString('fr-FR', {
         day: 'numeric',
-        month: 'long',
+        month: 'numeric',
+        year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       });
       
       historyDiv.innerHTML += `
-        <div class="participation">
-          <span>${game.pseudo}</span>
-          <span>${game.result ? 'Gagné' : 'Perdu'}</span>
-          <span class="game-date">${formattedDate}</span>
-        </div>
+      <div class="participation">
+      <span>${game.pseudo}</span>
+      <span>${game.result ? 'Gagné' : 'Perdu'}</span>
+      <span class="game-date">${formattedDate}</span>
+      </div>
       `;
     });
+    
+    // Sauvegarde les données corrigées
+    localStorage.setItem('games', JSON.stringify(games));
   }
 }
+
 async function finishedGames() {
   const flippedCards = document.querySelectorAll('.flipped');
 
@@ -161,30 +146,30 @@ async function finishedGames() {
     const img = card.querySelector('.front img');
     if (img) images.push(img.src.split('/').pop()); // Récupère le nom du fichier image
   });
-
+  
   const uniqueImages = [...new Set(images)];
   hasWon = uniqueImages.length === 1 && images.length === 3;
-
+  
   // Création de la popup
   const popup = document.createElement('div');
   popup.className = 'result-popup';
   popup.innerHTML = `
-    <div class="popup-content">
-      <h2>${hasWon ? '🎉 Félicitations, ' + username + ' !' : '😢 Dommage, ' + username + '...'}</h2>
-      <br>
-      <p>${hasWon ? 'Tu as empoché le gros lot !' : 'C\'est perdu.'}</p>
-      <button onclick="this.parentElement.parentElement.remove(); generateCards();">
-      Réessayer</button>
-    </div>
+  <div class="popup-content">
+  <h2>${hasWon ? '🎉 Félicitations, ' + username + ' !' : '😢 Dommage, ' + username + '...'}</h2>
+  <br>
+  <p>${hasWon ? 'Tu as empoché le gros lot !' : 'C\'est perdu.'}</p>
+  <button onclick="this.parentElement.parentElement.remove(); generateCards();">
+  Réessayer</button>
+  </div>
   `;
-
+  
   document.body.appendChild(popup);
-
-// Stockage dans localStorage
-const gameData = {
-  pseudo: username,
+  
+  // Stockage dans localStorage
+  const gameData = {
+    pseudo: username,
   result: hasWon,
-  date: Date.now()
+  date: Date.now() - (4 * 60 * 60 * 1000)
 };
 
 const storedGames = localStorage.getItem('games');
@@ -198,4 +183,23 @@ if (storedGames) {
 }
 
 // Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+  const savedUsername = localStorage.getItem('username');
+  if (savedUsername) {
+    username = savedUsername;
+    document.querySelector('.user-form').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+  }
+  const savedCookieUsername = getCookie('username');
+  if (savedUsername) {
+    username = savedCookieUsername;
+    document.querySelector('.user-form').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+  }
+  if (username) {
+    document.querySelector('.user-form').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+  }
+});
+
 document.addEventListener('DOMContentLoaded', generateCards);
